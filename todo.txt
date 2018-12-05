@@ -1,0 +1,11 @@
+User Template --Completed
+Category Template 
+Right Sidebar --Completed
+Login/Register --Done
+Fix Activity Logs bug
+User Profile [Edit,Delete]
+Comments Bug
+Subscribe Bug
+Follow/Unfollow Bugs
+Fix feed Bugs --uncompleted
+PageController --Scratch
