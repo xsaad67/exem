@@ -22,6 +22,7 @@ class CreatePostsTable extends Migration
             $table->integer('type')->default(1)->comment('1 for post, 2 for image, 3 for meme');
             $table->integer('visitors')->default(1);
             $table->string('featured')->nullable();
+            $table->string('tags')->nullable();
             $table->string('link')->nullable();
             $table->longText('description')->nullable();
             $table->boolean('isApproved')->default(1);

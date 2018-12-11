@@ -8,17 +8,21 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Input;
 use Avatar;
 use App\Custom\CustomHtmlParser;
-use Image; 
-
+use Image;
 class PostController extends Controller
 {
     
-    public function index()
-    {  
-        $posts = Post::latest()->paginate(20);
-        return view('posts.index',compact('posts'));
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index','show']);
     }
 
+
+    public function index()
+    {  
+        $posts = Post::with('upvoters','downvoters','user')->latest()->paginate(20);
+        return view('posts.index',compact('posts'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -41,22 +45,27 @@ class PostController extends Controller
     public function store(Request $request)
     {
 
+        
         $minDesc = 5;
-        $validator = $request->validate([
-            'title' => 'required|min:2', 
+        $validator = $this->validate($request,[
+            'title' => 'required|min:2|bail', 
             'description' =>  function($attribute, $value, $fail) use ($minDesc) {
                                if(strlen(strip_tags($value)) < $minDesc){
                                     return $fail('Post content must be greater than '.$minDesc);
                                 }
-                            },          
+                            },  
+            'category' => 'required|exists:categories,id',
+            'tags' => 'required'      
                                    
         ]);
 
          $post = new Post();
          $post->title= $request->title;
-         $post->user_id = 1;
-         $post->category_id = 2;
+         $post->user_id = auth()->id();
+         $post->category_id = $request->category;
          $post->description =$request->description;
+         $post->tags = $request->tags;
+         
          $isSave = $post->save();
 
     }
@@ -80,9 +89,10 @@ class PostController extends Controller
      * @param  \App\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit(Post $post)
     {
-        return view('posts.edit');
+        $this->authorize('update', $post);
+        return view('posts.edit',compact('post'));
     }
 
     /**
@@ -94,7 +104,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $this->authorize('update', $post);
     }
 
     /**
@@ -105,11 +115,13 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $this->authorize('update', $post);
+        
     }
 
     public function refreshDB()
     {
+       
         \DB::table('posts')->delete();
         $max = \DB::table('posts')->max('id') + 1; 
         \DB::statement("ALTER TABLE users AUTO_INCREMENT =  $max");
@@ -124,6 +136,8 @@ class PostController extends Controller
    
     public function uploadImage(Request $request){
         
+        ini_set('memory_limit','256M');
+
         $CKEditor = $request->input('CKEditor');
         $funcNum  = $request->input('CKEditorFuncNum');
         $message  = $url = '';
@@ -131,7 +145,8 @@ class PostController extends Controller
             $file = Input::file('upload');
             if ($file->isValid()) {
                 $filename =rand(1000,9999).$file->getClientOriginalName();
-                $file->move(public_path().'/wysiwyg/', $filename);
+                Image::make(Input::file('upload'))->resize(300, 200)->save(public_path().'/wysiwyg/'.$filename);
+
                 $url = url('wysiwyg/' . $filename);
             } else {
                 $message = 'An error occurred while uploading the file.';

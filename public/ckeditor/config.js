@@ -40,6 +40,7 @@ CKEDITOR.editorConfig = function( config ) {
 	// Simplify the dialog windows.
 	config.removeDialogTabs = 'image:advanced;link:advanced';
 	config.filebrowserUploadMethod = 'form';
+	config.height='350px';
 
 	// 
 };

@@ -20,7 +20,7 @@ class CrawlController extends Controller
 
         //Get User Info first and put them into session array
     	$array  = [];
-    	$html = "https://randomuser.me/api/?results=50&inc=name,gender,nat,picture,email&nat=us,dk,fr,gb";
+    	$html = "https://randomuser.me/api/?results=40&inc=name,gender,nat,picture,email&nat=us,gb";
     	$json = json_decode(file_get_contents($html));
 
     	foreach($json->results as $key=>$row){
@@ -45,7 +45,7 @@ class CrawlController extends Controller
             $user->email = $row['email'];
             $user->avatar = $fileName;
             $user->password = bcrypt("secret");
-    	 	$folderName = "img/avatar/";
+    	 	$folderName = "img/avatars/";
     	 	$image = file_get_contents($row['avatar']);
 
 			file_put_contents(public_path($folderName.$fileName), $image);

@@ -294,12 +294,6 @@ border:none;
   }
 
 
-  $("#example-save").memeGenerator({
-  
-  });
-  
-  $("#save").click(function(e){
-  e.preventDefault();
   
   var imageDataUrl = $("#example-save").memeGenerator("save");
   

@@ -18,6 +18,12 @@
     <link rel='stylesheet' href='{{asset("css/social-share.min.css")}}' type='text/css' media='all' />
 
     {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/unused.min.css')}}"> --}}
+
+    <style>
+  
+    .dropdown-menu {display: block;visibility: hidden;opacity:0;transform: translateY(50px);transition:.5s ease all;}
+.dropdown-menu.show {display: block;visibility: visible;opacity:1;transform: translateY(0px);transition:.5s ease all;}
+    </style>
   @yield('css')
 </head>
 

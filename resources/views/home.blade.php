@@ -14,6 +14,11 @@
                         </div>
                     @endif
 
+                    @php dump(auth()->user()->isAdmin()) @endphp
+
+                    @if(auth()->user()->isAdmin())
+                        "yes"
+                    @endif
                     You are logged in!
                 </div>
             </div>

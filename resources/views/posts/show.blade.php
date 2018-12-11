@@ -46,6 +46,8 @@
                                         <span itemprop="name">{{$post->user->name}}</span> 
                                     </a>
                                 </span>
+
+                                <button type="button" class="btn btn-primary ml-4">Follow</button> 
                             </div>
                            
                         </div>
@@ -134,11 +136,14 @@
                 @auth
                     <form method = "POST" action="{{action('CommentController@store')}}">
                         @csrf
-                        <textarea name="comment" placeholder="Post Your Comment" id="postComment"></textarea>
+                        <textarea name="comment" placeholder="Post Your Comment" id="postComment" class="col-12"></textarea>
                         <input type="hidden" value="{{encrypt($post->id)}}" name="post" id="commentPostId">
-                        <div class="pull-right">
-                            <button type="button" classs="btn create-post" id="create-comment" style="background:red; margin-top:5px;">Comment</button>
+                        <div class="col-12">
+                            <div class="float-right">
+                                <button type="button" classs="btn create-post" id="create-comment" style="background:red; margin-top:5px;">Comment</button>
+                            </div>
                         </div>
+                       
                     </form>
 
                 @else

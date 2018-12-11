@@ -16,10 +16,12 @@
                             <div class="bb-header-navigation header-item">
                                 <nav class="main-navigation">
                                     <ul id="menu-top-navigation-1" class="">
-                                        @foreach(App\Category::all() as $navcategory)
+                                        @php $navCategories = App\Category::all(); @endphp
+                                        @foreach($navCategories as $navcategory)
                                             <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-486">
                                                 <a href="{{$navcategory->link}}">{{$navcategory->name}}</a>
                                             </li>
+                                            @if($loop->iteration ==5) @php break; @endphp @endif
                                         @endforeach
                                         
                                     </ul>
@@ -103,16 +105,19 @@
                                 </div>
                             </div>
                             <div class="header-item bb-header-user-box bb-toggle pos-right">
-                                 <div class="dropdown">
+                                <div class="dropdown">
                                     <a class="bb-header-icon dropdown-toggle" data-toggle="dropdown">
                                        <i class="bb-icon bb-ui-icon-user"></i> 
                                     </a>
-                                    <div class="dropdown-menu">
-                                      <a class="dropdown-item" href="#">Link 1</a>
-                                      <a class="dropdown-item" href="#">Link 2</a>
-                                      <a class="dropdown-item-text" href="#">Text Link</a>
-                                      <span class="dropdown-item-text">Just Text</span>
+                                    <div class="dropdown-menu dropdown-menu-center">
+                                      <a class="dropdown-item mt-2">Manage Accounts</a>
+                                      <a class="dropdown-item mt-2">Manage Accounts</a>
+                                      <a class="dropdown-item mt-2">Manage Accounts</a>
+                                      <a class="dropdown-item mt-2">Manage Accounts</a>
                                     </div>
+
+
+
                                 </div>
                                 
 

@@ -55,5 +55,9 @@ class User extends Authenticatable
         return is_null($this->avatar) ? \Avatar::create($this->name)->toBase64(): asset('img/avatars/'.$this->avatar);
     }
 
+public function isAdmin()
+{
+  return $this->is_admin == 1 ? true : false;
+}
 
 }
