@@ -1,8 +1,11 @@
 @extends('posts.layouts.main')
 
 
+
+@section('title',$totalPosts . " ". str_plural("post",$totalPosts))
+
 @section('postcontent')
-    
+
     <div class="infinite-scroll">
 
         @foreach($posts as $post)
@@ -93,36 +96,11 @@
         @endforeach
 
         {{ $posts->links() }}
+
     </div>
 @endsection
 
 
 @section('footer')
-    <script src="{{asset('js/jscroll.js')}}"></script>
-    <script type="text/javascript">
-         $('ul.pagination').hide();
-
-        $(function() {
-            let params = new URLSearchParams(location.search);
-
-            var page=params.get('page');
-            if(typeof page === 'undefined' || page === null){
-                page=1;
-            }
-            console.log(page);
-            $('.infinite-scroll').jscroll({
-                autoTrigger: true,
-                loadingHtml: '<img class="center-block" src="/images/loader.gif" alt="Loading..." />',
-                padding: 0,
-                nextSelector: '.pagination li.active + li a',
-                contentSelector: 'div.infinite-scroll',
-                callback: function() {
-                    page++;
-                    window.history.pushState('page2', 'Title', '?page='+page);
-                    $('ul.pagination').remove();
-                }
-            });
-        });
-    </script>
     <script src="{{asset('js/admin-ajax.js')}}"></script>
 @endsection

@@ -13,14 +13,9 @@ use Illuminate\Support\Facades\File;
 Auth::routes();
 
 
-// Route::get('/',function(){
-// 	return view('layouts.main1');
-// });
-
-
 
 Route::get('/','PostController@index');
-Route::get('/redditjson','RedditController@index');
+Route::get('/redditjson','RedditController@index'); 
 Route::get('/post/create','PostController@create');
 Route::get('/post/{post}','PostController@show');
 Route::get('/post/edit/{post}','PostController@edit');
@@ -31,14 +26,12 @@ Route::post('/voteup','VoteController@voteUp');
 Route::post('/votedown','VoteController@voteDown');
 Route::get('/refresh-posts','PostController@refreshDB');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/search','SearchController@index');
 Route::resource('/comment','CommentController');
-
+Route::get('/tags/{tag}','TagController@show');
 Route::get('/image','PostController@index');
 
 
-Route::prefix('super')->group(function(){
-	Route::get('/dashboard','AdminController@index')->name('dashboard');
-});
 
 Route::prefix('crawl')->group(function () {
    	Route::get('/randusers','CrawlController@randomUsers');
@@ -46,18 +39,15 @@ Route::prefix('crawl')->group(function () {
   	Route::get('/reddit','CrawlController@reddit');
   	Route::get('/fml','CrawlController@fml');
   	Route::get('/short-stories','CrawlController@short_stories');
+  	Route::get('/9gag','CrawlController@crawl_9gag');
 });
 
 
-Route::group(['middleware' => ['admin'], 'prefix' => 'admin'], function () {
-	Route::get('/hello',function(){
-		return "hello";
-	});
+Route::group(['middleware' => ['admin'], 'prefix' => 'super'], function () {
+	Route::get('/dashboard','AdminController@index')->name('dashboard');
 });
 
-// Route::prefix('image')->group(function()){
-// 	Route::get('/{width}x{}')
-// }
+
 
 Route::prefix('author')->group(function(){
 	Route::get('/{slug}','ProfileController@show');

@@ -7,6 +7,7 @@ use App\Post;
 use App\User;
 use App\Category;
 use Goutte;
+use Image;
 
 
 ini_set('max_execution_time', 480);
@@ -39,12 +40,13 @@ class CrawlController extends Controller
         //Save stored session into user table
     	foreach(session()->get('users') as $key=>$row){
 
-            $fileName = createFileName($row['avatar'],'avatar');
+            
             $user = new User();
             $user->name = $row['name'];
             $user->email = $row['email'];
             $user->avatar = $fileName;
             $user->password = bcrypt("secret");
+            $fileName = FileFromExternalUrl($row['avatar'],'avatar');
     	 	$folderName = "img/avatars/";
     	 	$image = file_get_contents($row['avatar']);
 
@@ -57,12 +59,10 @@ class CrawlController extends Controller
 
 
     public function randomBio(){
-
-
         $url = "https://shortstatusquotes.com/facebook-bio-status-quotes-about-me/";
         $crawler = Goutte::request('GET', $url);
         $crawler->filter('p.sq')->each(function ($node) {
-        dump($node->text());
+            dump($node->text());
         });
     }
 
@@ -169,6 +169,97 @@ public function short_stories(){
         echo "<br>";
     });
 }
+
+
+public function crawl_9gag(Request $request)
+{
+
+
+
+    $requestedCategory = $request->category;
+
+    $randFlag = is_null($requestedCategory) ? TRUE : FALSE;
+    $construct_url ="";
+    $category_id="";
+
+    if(!$randFlag){
+
+        $construct_url = is_null($requestedCategory) ? "" : "search-posts?query=".$requestedCategory;
+        $category = Category::where('name','LIKE',"%".strtolower(trim($requestedCategory))."%")->first();
+      
+        if(is_null($category)){
+            return "Category doesn't exist ".$requestedCategory;
+        }else{
+            $category_id = $category->id;
+        }
+
+    }
+
+
+    $url = ($randFlag == true) ? "https://9gag.com/v1/group-posts/group/default/type/hot?after=&c=30" : "https://9gag.com/v1/search-posts?query=fiction&c=20";
+    
+
+    $json = json_decode(file_get_contents($url));
+    dump($json);
+    dd($json);
+
+    foreach($json->data->posts as $data){
+
+        if(strtolower($data->type) == strtolower("photo")){
+
+            $post = Post::firstOrNew(['source'=>$data->url] );
+
+            $post->title = $data->title;
+            $post->link = $data->url;
+            $post->category_id= ($randFlag == TRUE) ? rand(1,Category::count()) : $category_id;
+
+            $url = $data->images->image700->url;
+
+            $fileName = FileFromExternalUrl($url,'img');
+            $folderName = "images/";
+            $image = file_get_contents($url);
+            file_put_contents(public_path($folderName.$fileName), $image);
+            $fileName = asset('images/'.$fileName);
+            $post->description = $fileName;
+
+            $post->website = '9gag.com';
+            $post->user_id = rand(1,8);
+            $post->visitors = rand(100,300);
+            $post->fakeUpVotes = rand(20,50);
+            $post->fakeDownVotes = rand(0,10);
+            $post->save();
+        }
+
+    }
+
+
+
+
+
+    dd("stoping script");
+
+
+    
+    
+  
+        // $description = str_replace("\n","",$node->text());
+        // if(!str_contains($description,'...') && strlen($description)>40){
+
+            // $post = Post::firstOrNew( ['source'=>"https://www.fmylife.com".$node->attr('href')] );
+            // $post->title=truncateString($description,50);
+            // $post->category_id= ($randFlag == TRUE) ? rand(1,Category::count()) : $category_id;
+            // $post->description=$description;
+            // $post->website = 'fmylife.com';
+            // $post->user_id = rand(1,8);
+            // $post->visitors = rand(100,300);
+            // $post->fakeUpVotes = rand(20,50);
+            // $post->fakeDownVotes = rand(0,10);
+            // $post->save();
+        // }
+
+    
+}
+
 
 
 public function short_story_single($link){

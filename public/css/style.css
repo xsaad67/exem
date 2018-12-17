@@ -1,4 +1,11 @@
 @charset "UTF-8";
+@font-face {
+    font-family: ui-icomoon;
+    src: url(http://blog.localhost/css/fonts/ui-icomoon.ttf) format("truetype"), url(http://blog.localhost/css/fonts/ui-icomoon.woff) format("woff"), url(http://blog.localhost/scss/icon-fonts/fonts/ui-icomoon.svg?18mp9r#ui-icomoon) format("svg");
+    font-weight: 400;
+    font-style: normal;
+}
+
 .list-inline,
 .list-unstyle {
     padding-left: 0;
@@ -56,7 +63,7 @@ fieldset[disabled] a.btn {
 
 @font-face {
     font-family: ui-icomoon;
-    src: url(fonts/ui-icomoon.ttf) format("truetype"), url(fonts/ui-icomoon.woff) format("woff"), url(../scss/icon-fonts/fonts/ui-icomoon.svg?18mp9r#ui-icomoon) format("svg");
+    src: url(../scss/icon-fonts/fonts/ui-icomoon.ttf?18mp9r) format("truetype"), url(../scss/icon-fonts/fonts/ui-icomoon.woff?18mp9r) format("woff"), url(../scss/icon-fonts/fonts/ui-icomoon.svg?18mp9r#ui-icomoon) format("svg");
     font-weight: 400;
     font-style: normal
 }
@@ -1377,6 +1384,17 @@ img {
 
 img {
     height: auto
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit
 }
 
 button::-moz-focus-inner {
@@ -4313,7 +4331,20 @@ input[type=password] {
 }
 
 
+input,
+select {
+    height: 48px
+}
 
+input[type=checkbox],	
+input[type=radio] {
+    height: auto;
+    margin: 4px 0 0;
+    padding: 0;
+    margin-top: 1px;
+    line-height: normal;
+    box-sizing: border-box
+}
 
 input.error,
 select.error,
@@ -4327,9 +4358,7 @@ textarea {
     resize: none
 }
 
-select::-ms-expand {
-    display: none
-}
+
 
 input[type=button],
 input[type=search] {
@@ -7432,8 +7461,8 @@ label {
     clear: both
 }
 
-.bb-post-nav .image>div h3,
-.bb-post-nav .image>div p,
+.bb-post-nav .bb-media-placeholder h3,
+.bb-post-nav .bb-media-placeholder p,
 .mixed-list .post-item-list .post-thumbnail .bb-badge-list .bb-badge:nth-child(3),
 .post-list.list .post-thumbnail .nsfw-post p,
 .widget_recent_entries .post-thumbnail .nsfw-post h3,
@@ -7635,15 +7664,11 @@ label {
     font-size: 30px
 }
 
-.bb-post-nav .image>div {
-    position: relative
-}
-
-.bb-post-nav .image>div .nsfw-content {
+.bb-post-nav .bb-media-placeholder .nsfw-content {
     padding: 5px 0
 }
 
-.bb-post-nav .image>div .bb-icon {
+.bb-post-nav .bb-media-placeholder .bb-icon {
     font-size: 24px
 }
 
@@ -7688,23 +7713,23 @@ label {
     overflow: hidden
 }
 
-.other-posts.post-grid .post-thumbnail .nsfw-post,
+.bb-other-posts.post-grid .post-thumbnail .nsfw-post,
 .post-list.list.big-item .post-thumbnail .nsfw-post {
     padding: 30px 0
 }
 
-.other-posts.post-grid .post-thumbnail .nsfw-post .bb-icon,
+.bb-other-posts.post-grid .post-thumbnail .nsfw-post .bb-icon,
 .post-list.list.big-item .post-thumbnail .nsfw-post .bb-icon {
     font-size: 50px
 }
 
-.other-posts.post-grid .post-thumbnail .nsfw-post h3,
+.bb-other-posts.post-grid .post-thumbnail .nsfw-post h3,
 .post-list.list.big-item .post-thumbnail .nsfw-post h3 {
-    margin: 20px 0 5px;
+    margin: 10px 0 5px;
     font-size: 20px
 }
 
-.other-posts.post-grid .post-thumbnail .nsfw-post p,
+.bb-other-posts.post-grid .post-thumbnail .nsfw-post p,
 .post-list.list.big-item .post-thumbnail .nsfw-post p {
     display: block
 }
@@ -8045,6 +8070,7 @@ label {
     position: relative;
     display: block;
     list-style: none;
+    border-top: 1px solid #f4f3f3
 }
 
 #comments .comment:first-child,
@@ -8342,7 +8368,7 @@ label {
 @media screen and (max-width:767px) {
     #comments .comment .children,
     #comments .comment .children .children {
-        padding-left: 0
+        padding-left: 10px
     }
 }
 
@@ -12906,6 +12932,7 @@ html.bb-gl-open {
     line-height: 1.2em;
     font-weight: 600;
     color: inherit;
+    text-transform: uppercase
 }
 
 .widget_bb-side-navigation .menu-item.menu-item-icon>a {
@@ -14691,70 +14718,5 @@ iframe.instagram-media {
     color: #5bc0de
 }
 
-.bb-post-share-box,
-.s-post-meta-block {
-    margin-bottom: 20px
-}
 
-.s-post-meta-block {
-    margin-top: 20px
-}
-
-.bb-post-meta {
-    color: #f13544
-}
-
-img.emoji {
-    display: inline!important;
-    border: none!important;
-    box-shadow: none!important;
-    height: 1em!important;
-    width: 1em!important;
-    margin: 0 .07em!important;
-    vertical-align: -.1em!important;
-    background: 0 0!important;
-    padding: 0!important
-}
-
- #mobile-nav-bg{
-        display:block;
-    }
-
-    .postBody{
-        font-size: 16px;
-        border:5px dashed #eee;
-        font-weight: 700;
-        line-height: 1.5em;
-        padding: 30px 27px;
-        text-align: center;
-    }
-
-    .postBody > p > img{
-        height: 200px !important;
-        width: 100% !important;
-        object-fit: cover;
-    }
-    .center-block{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto;
-        height: 50px;
-    }
-
-   
-.cat-active{
-    color: #f13544 !important;
-    font-weight: 700 !important;
-    font-size: 15px !important;
-}
-
-.menu-item > a:hover{
-    color: #f13544 !important;
-    font-weight: 700 !important;
-    text-decoration: none !important;
-}
-
-.cl-reddish{color: #f13544 !important;}
-.mb20{margin-bottom:20px;}
 /*# sourceMappingURL=style.min.css.map */

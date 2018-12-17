@@ -98,34 +98,32 @@
                                     <i class="bb-icon bb-ui-icon-search"></i> 
                                 </a>
                                 <div class="search-dropdown bb-header-dropdown toggle-content">
-                                    <form role="search" method="get" class="search-form form" action="https://boombox.px-lab.com/another-gag/">
+                                    <form role="search" method="GET" class="search-form form" action="{{action('SearchController@index')}}">
                                         <input type="search" class="pull-left" name="s" value="">
                                         <button class="search-submit pull-right" type="submit">Search</button>
                                     </form>
                                 </div>
                             </div>
+
+                            <a class="h-icon header-item create-post pos-right" href="/login"><span>Login</span></a>
+                            <a class="h-icon header-item create-post pos-right" href="/register"><span>Register</span></a>
                             <div class="header-item bb-header-user-box bb-toggle pos-right">
-                                <div class="dropdown">
-                                    <a class="bb-header-icon dropdown-toggle" data-toggle="dropdown">
-                                       <i class="bb-icon bb-ui-icon-user"></i> 
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-center">
-                                      <a class="dropdown-item mt-2">Manage Accounts</a>
-                                      <a class="dropdown-item mt-2">Manage Accounts</a>
-                                      <a class="dropdown-item mt-2">Manage Accounts</a>
-                                      <a class="dropdown-item mt-2">Manage Accounts</a>
-                                    </div>
-
-
-
+                            <div class="dropdown">
+                                <a class="bb-header-icon dropdown-toggle" data-toggle="dropdown"> <i class="bb-icon bb-ui-icon-user"></i> </a>
+                                <div class="dropdown-menu dropdown-menu-center">
+                                  <a class="dropdown-item mt-2">Manage Accounts</a>
+                                  <a class="dropdown-item mt-2">Manage Accounts</a>
+                                  <a class="dropdown-item mt-2">Manage Accounts</a>
+                                  <a class="dropdown-item mt-2">Manage Accounts</a>
                                 </div>
-                                
+                            </div>
+                               
+
+
+
 
                             </div> 
-                            <a class="h-icon header-item create-post pos-right zf-create-popup" href="{{url('/post/create')}}">
-                                <span class="bb-icon bb-ui-icon-plus"></span> 
-                                <span>Upload</span>
-                            </a>
+                          
 
                         </div>
                     </div>

@@ -37,8 +37,7 @@ input.form-control{
 .form-control:focus {
   color: #495057;
   background-color: #fff;
-  border-color: #ccc !important;
-  box-shadow: none;
+  box-shadow:none;
 }
 
 </style>
@@ -66,10 +65,8 @@ input.form-control{
                       </div>
                     @endif
                 </div>
-                <div class="row">
 
-                  <div class="col-sm-6 col-lg-6 col-md-6">
-                      <div class="form-group">
+                   <div class="form-group">
                           <select class="form-control" name="category">
                               <option value="">Please select a category</option>
                               @foreach(App\Category::all() as $cat)
@@ -83,22 +80,6 @@ input.form-control{
                             </div>
                           @endif
                       </div>
-                  </div>
-
-                  <div class="col-sm-6 col-lg-6 col-md-6">
-                    <div class="form-group">
-                        <input type="text" value="{{old('tags')}}" name="tags" class="form-control" data-role="tagsinput" placeholder="Add tags" />
-                          
-                        @if($errors->has('tags'))
-                          <div class="text-danger mt-2 ml-2">
-                            <strong class="">{{$errors->first('tags')}}</strong>
-                          </div>
-                        @endif
-
-                    </div>
-                  </div>
-
-                </div>
                
 
                 <div class="form-group">
@@ -109,6 +90,18 @@ input.form-control{
                         <strong class="">{{$errors->first('description')}}</strong>
                       </div>
                     @endif
+                </div>
+
+
+                <div class="form-group">
+                    <input type="text" value="{{old('tags')}}" name="tags" class="form-control" data-role="tagsinput" placeholder="Add tags" />
+                      
+                    @if($errors->has('tags'))
+                      <div class="text-danger mt-2 ml-2">
+                        <strong class="">{{$errors->first('tags')}}</strong>
+                      </div>
+                    @endif
+
                 </div>
 
                 <hr>

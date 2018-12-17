@@ -25,7 +25,22 @@
 
 @section('postcontent')
 
+    <div class="s-post-header-top d-table-center-sm bb-mb-el">
+        <div class="d-table-cell text-left-sm">
+            <p class="bb-cat-links size-lg s-post-cat-links">
+                <a href="{{$post->category->link}}" rel="category tag">{{$post->category->name}}</a>
+            </p>
+        </div>
+        
+    </div>
 
+
+        @if(session('success'))
+            <div class="alert alert-success mt-2 text-center">
+                {{session('success')}}
+            </div>
+        @endif
+   
     <div class="s-post-main mb-md bb-mb-el bb-card-item">
                 <header class="entry-header s-post-header bb-mb-el">
                     <h1 class="entry-title s-post-title bb-mb-el" itemprop="headline">{{$post->title}}</h1>                   
@@ -33,7 +48,7 @@
                 
                 <div class="s-post-meta-block bb-mb-el">
 
-                    <div class="post-meta-content row">
+                    <div class="post-meta-content row mt-2 mb-2">
                       
                         <div class="col-8">
                             <div class="author-avatar">
@@ -42,23 +57,21 @@
                                     class="avatar avatar-66 photo" height="35" width="35" itemprop="image" style="border-radius: 50%;">
                                 </a>
                                 <span class="auth-name"> 
-                                    <a class="auth-url" href="{{ $post->user->link }}" itemprop="url"> 
-                                        <span itemprop="name">{{$post->user->name}}</span> 
-                                    </a>
+                                    <a class="auth-url" href="{{ $post->user->link }}" itemprop="url">{{$post->user->name}}</a>
                                 </span>
 
-                                <button type="button" class="btn btn-primary ml-4">Follow</button> 
                             </div>
                            
                         </div>
 
-                        <div class="col-4">
-                            <div class="cl-reddish">
+                        <div class="col-4  pt-2">
+                            <div class="fl-red">
                                 <span class="bb-icon bb-ui-icon-trending-eye"></span>
                                 <span class="count">{{$post->visitors}}</span>
                                 <span class="txt">{{str_plural('view',$post->visitors)}}</span>
                             </div>
                         </div>
+                        
                     </div>
 
                 </div>
@@ -95,7 +108,7 @@
                             </a>
                         </div>
 
-                           <div class="essb_links essb_counters essb_displayed_boombox essb_share essb_template_default4-retina essb_template_glow-retina essb_1179878203 essb_width_flex essb_links_center print-no">
+                        <div class="essb_links essb_counters essb_displayed_boombox essb_share essb_template_default4-retina essb_template_glow-retina essb_1179878203 essb_width_flex essb_links_center print-no mb-4">
 
                                 <ul class="essb_links_list">
                                    
@@ -114,16 +127,22 @@
                                     </li>
                                 </ul>
 
-                            </div>
+                        </div>
                     </div>
                 </div>
 
                     {!! $post->description !!}
               
+                @if($post->tags)
+                    @php $tags = explode(",",$post->tags);@endphp
 
-                <div class="bb-tags mb-md bb-mb-el" itemprop="keywords">
-                    <a href="{{$post->category->link}}" rel="tag">{{$post->category->name}}</a>
-                </div>
+                    <div class="bb-tags mb-md bb-mb-el" itemprop="keywords">
+                        @foreach($tags as $tag)
+                            <a href="{{url("/tags/".str_slug($tag))}}" rel="tag">{{$tag}}</a>
+                        @endforeach
+                    </div>
+                    
+                @endif
     </div>
 
 
@@ -169,9 +188,6 @@
             </div>
     </section>
      
-
-     
-
 @endsection
 
 @section('footer')

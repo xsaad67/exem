@@ -1,29 +1,22 @@
 <!DOCTYPE HTML>
-<html lang="en-US" prefix="og: http://ogp.me/ns# og: http://ogp.me/ns#">
-
+<html lang=en-US>
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="_token" content="{{csrf_token()}}">
-    <meta property="og:image" content="https://media1.giphy.com/media/2dhqGEHVWNHfJM6TpL/giphy.webp" />
-    <meta property="og:author" content="hello" />
+    <meta property="og:image" content="" />
+    <meta property="og:author" content="" />
     <title>@yield('title')</title>
     <meta name="description" content="@yield('description')">
   
-     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat%3A300%2C300i%2C400%2C400i%2C500%2C500i%2C600%2C600i%2C700%2C700i%2C800%2C800i%2C900%2C900i&#038;subset=latin%2Clatin-ext&#038;ver=2.5.7' type='text/css' media='all' />
+     <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
     <link rel='stylesheet' href='{{asset("css/style.css")}}' type='text/css' media='all' />
-    <link rel ="stylesheet" href="{{asset('css/main.css')}}" />
-    <link rel="stylesheet" href="{{asset('css/bootstrap4.min.css')}}">
-    
-    <link rel='stylesheet' href='{{asset("css/social-share.min.css")}}' type='text/css' media='all' />
+    <link rel ="stylesheet" href="{{ asset('css/main.css')}}" />
+    <link rel="stylesheet" href="{{ asset('css/bootstrap4.min.css') }}">
+    <link rel='stylesheet' href='{{ asset("css/social-share.min.css") }}' type='text/css' media='all' />
 
-    {{-- <link rel="stylesheet" type="text/css" href="{{asset('css/unused.min.css')}}"> --}}
+    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('css/unused.min.css') }}"> --}}
 
-    <style>
-  
-    .dropdown-menu {display: block;visibility: hidden;opacity:0;transform: translateY(50px);transition:.5s ease all;}
-.dropdown-menu.show {display: block;visibility: visible;opacity:1;transform: translateY(0px);transition:.5s ease all;}
-    </style>
   @yield('css')
 </head>
 
@@ -41,12 +34,14 @@
                 <div class="container header-row">
                     <div class="header-row-layout">
                         <div class="header-col header-l">
-                            <a id="menu-button" class="header-item bb-header-icon menu-button pos-left" role="button" href="#"> <i class="bb-ui-icon-burger-menu"></i> </a>
+                            <a id="menu-button" class="header-item bb-header-icon menu-button pos-left" role="button" href="#"> 
+                                <i class="bb-ui-icon-burger-menu"></i> 
+                            </a>
                         </div>
                         <div class="header-col header-c">
                             <div class="branding">
                                 <p class="site-title">
-                                    <a href="https://boombox.px-lab.com/another-gag/"> 
+                                    <a href="{{url('/')}}"> 
                                         <img src="https://boombox.px-lab.com/another-gag/wp-content/uploads/sites/3/2017/12/gag_logo-68x66.png?x46754" alt="BoomBox: Another GAG" width="38" height="33" srcset="https://boombox.px-lab.com/another-gag/wp-content/uploads/sites/3/2017/12/gag_logo-68x66.png 2x,https://boombox.px-lab.com/another-gag/wp-content/uploads/sites/3/2017/12/gag_logo-68x66.png 1x" /> 
                                     </a>
                                 </p>
@@ -54,7 +49,7 @@
                         </div>
                         <div class="header-col header-r">
                             <div class="header-item bb-header-user-box bb-toggle pos-right">
-                                <a class="bb-header-icon js-authentication" role="button" data-toggle=".bb-header-user-box .menu" href="#sign-in"> <i class="bb-icon bb-ui-icon-user"></i> </a>
+                                <a class="bb-header-icon js-authentication" role="button" data-toggle=".bb-header-user-box .menu" href="/login"> <i class="bb-icon bb-ui-icon-user"></i> </a>
                             </div>
                         </div>
                     </div>

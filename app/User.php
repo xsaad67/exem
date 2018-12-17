@@ -52,7 +52,7 @@ class User extends Authenticatable
    }
 
     public function getDpAttribute(){
-        return is_null($this->avatar) ? \Avatar::create($this->name)->toBase64(): asset('img/avatars/'.$this->avatar);
+        return is_null($this->avatar) ? \Avatar::create($this->name)->setBackground('#f13544')->toBase64() : asset('img/avatars/'.$this->avatar);
     }
 
 public function isAdmin()

@@ -14,12 +14,13 @@ class PostController extends Controller
     
     public function __construct()
     {
-        $this->middleware('auth')->except(['index','show']);
+        $this->middleware('auth')->except( ['index','show'] );
     }
 
 
     public function index()
     {  
+
         $posts = Post::with('upvoters','downvoters','user')->latest()->paginate(20);
         return view('posts.index',compact('posts'));
     }
@@ -45,7 +46,6 @@ class PostController extends Controller
     public function store(Request $request)
     {
 
-        
         $minDesc = 5;
         $validator = $this->validate($request,[
             'title' => 'required|min:2|bail', 
@@ -67,6 +67,8 @@ class PostController extends Controller
          $post->tags = $request->tags;
          
          $isSave = $post->save();
+         $post =  $post->append('link');
+         return redirect($post->link)->withSuccess("Your post has been successfully created");
 
     }
 
@@ -78,7 +80,8 @@ class PostController extends Controller
      */
     public function show($post)
     {
-        $post=Post::with("comments")->where('slug', $post)->firstOrFail();
+        $post = Post::with("comments")->where('slug', $post)->firstOrFail();
+        //return $post;
         $post->increment('visitors',1);
         return view('posts.show',compact('post'));
     }
@@ -121,10 +124,8 @@ class PostController extends Controller
 
     public function refreshDB()
     {
-       
-        \DB::table('posts')->delete();
-        $max = \DB::table('posts')->max('id') + 1; 
-        \DB::statement("ALTER TABLE users AUTO_INCREMENT =  $max");
+        $user_id = is_null( auth()->id() ) ?  1 : 0;
+        dd($user_id);
     }
 
 
@@ -144,10 +145,25 @@ class PostController extends Controller
         if (Input::hasFile('upload')) {
             $file = Input::file('upload');
             if ($file->isValid()) {
-                $filename =rand(1000,9999).$file->getClientOriginalName();
-                Image::make(Input::file('upload'))->resize(300, 200)->save(public_path().'/wysiwyg/'.$filename);
+                
+                $width = Image::make(Input::file('upload'))->width();
+                $filename =$width."_".date('YmdHis').$file->getClientOriginalName();
 
-                $url = url('wysiwyg/' . $filename);
+                if($width>640){
+                    $width = 640; // your max width
+                    $height = 600; // your max height
+                    $img = Image::make(Input::file('upload'));
+                    $img->height() > $img->width() ? $width=null : $height=null;
+                    $img->resize($width, $height, function ($constraint) {
+                        $constraint->aspectRatio();
+                    });
+                    $img->save(public_path().'/images/'.$filename);
+
+                }else{
+                    Image::make(Input::file('upload'))->save(public_path().'/images/'.$filename);
+                }
+
+                $url = url('images/' . $filename);
             } else {
                 $message = 'An error occurred while uploading the file.';
             
@@ -158,3 +174,5 @@ class PostController extends Controller
         return '<script>window.parent.CKEDITOR.tools.callFunction('.$funcNum.', "'.$url.'", "'.$message.'")</script>';
     }
 }
+
+

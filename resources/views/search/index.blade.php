@@ -1,10 +1,13 @@
 @extends('posts.layouts.main')
 
 
+
+@section('title',$totalPosts . " ". str_plural("result",$totalPosts)." found for ".$query)
 @section('postcontent')
-    
+
     <div class="infinite-scroll">
 
+        <h4 class="text-center mb-3">{{$totalPosts. " " . str_plural("result",$totalPosts)}}  found for <span >"{{ucwords($query)}}"</span></h4>
         @foreach($posts as $post)
 
             <div class="bb-post-collection hfeed post-list standard bb-thumbnail-stretched bb-media-playable">

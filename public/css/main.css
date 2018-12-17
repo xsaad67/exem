@@ -13,6 +13,12 @@
         padding: 30px 27px;
         text-align: center;
         }
+
+
+        .fl-red{
+            color: #f13544;
+            font-weight: 600;
+        }
         
 
         .postBody:hover{
