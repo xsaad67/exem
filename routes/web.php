@@ -20,6 +20,7 @@ Route::get('/post/create','PostController@create');
 Route::get('/post/{post}','PostController@show');
 Route::get('/post/edit/{post}','PostController@edit');
 Route::post('/post/update/{post}','PostController@update');
+Route::get('/post/delete/{post}','PostController@destroy');
 Route::post('/post/store','PostController@store');
 Route::post('upload_image','PostController@uploadImage')->name('upload-image');
 Route::post('/voteup','VoteController@voteUp');
@@ -50,6 +51,9 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'super'], function () {
 
 
 Route::prefix('author')->group(function(){
+  Route::middleware(['auth'])->group(function(){ 
+    Route::get('/edit','ProfileController@edit');
+  });
 	Route::get('/{slug}','ProfileController@show');
 });
 

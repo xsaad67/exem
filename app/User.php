@@ -55,9 +55,13 @@ class User extends Authenticatable
         return is_null($this->avatar) ? \Avatar::create($this->name)->setBackground('#f13544')->toBase64() : asset('img/avatars/'.$this->avatar);
     }
 
-public function isAdmin()
-{
-  return $this->is_admin == 1 ? true : false;
-}
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+    public function isAdmin()
+    {
+      return $this->is_admin == 1 ? true : false;
+    }
 
 }

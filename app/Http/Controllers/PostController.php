@@ -108,6 +108,29 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $this->authorize('update', $post);
+
+        $minDesc = 5;
+        $validator = $this->validate($request,[
+            'title' => 'required|min:2|bail', 
+            'description' =>  function($attribute, $value, $fail) use ($minDesc) {
+                               if(strlen(strip_tags($value)) < $minDesc){
+                                    return $fail('Post content must be greater than '.$minDesc);
+                                }
+                            },  
+            'category' => 'required|exists:categories,id',
+            'tags' => 'required'      
+                                   
+        ]);
+
+        $post->title= $request->title;
+        $post->user_id = auth()->id();
+        $post->category_id = $request->category;
+        $post->description =$request->description;
+        $post->tags = $request->tags;
+         
+        $isSave = $post->save();
+        $post =  $post->append('link');
+        return redirect($post->link)->withSuccess("Your post has been successfully updated");
     }
 
     /**
@@ -119,15 +142,14 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $this->authorize('update', $post);
-        
-    }
+        \Spatie\Activitylog\Models\Activity::where('subject_id',$post->id)->delete();
+        $returnUrl = $post->user->link;
+        $postName = $post->title;
+        $isDelete = $post->delete();
 
-    public function refreshDB()
-    {
-        $user_id = is_null( auth()->id() ) ?  1 : 0;
-        dd($user_id);
+        return ($isDelete == true) ? redirect($returnUrl)->withSuccess("Your post titled ". $postName. " has been deleted") :  
+                redirect($returnUrl)->withError("Sorry we can't delete your post titled ". $postName. " at this moment");
     }
-
 
     /**
      * Upload Images on wysiwyg

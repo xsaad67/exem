@@ -24,6 +24,7 @@ trait Sluggable
            }
 
 		});
+
 	}
 
 	abstract public function sluggable(): array;

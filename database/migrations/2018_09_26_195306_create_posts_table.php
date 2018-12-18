@@ -30,6 +30,7 @@ class CreatePostsTable extends Migration
             $table->string('website')->nullable();
             $table->integer('fakeUpVotes')->nullable();
             $table->integer('fakeDownVotes')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

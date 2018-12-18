@@ -94,7 +94,7 @@ input.form-control{
 
 
                 <div class="form-group">
-                    <input type="text" value="{{old('tags')}}" name="tags" class="form-control" data-role="tagsinput" placeholder="Add tags" />
+                    <input type="text" value="{{old('tags')}}" name="tags" class="form-control" data-role="tagsinput" placeholder="Add tags" placeholder="Add Tags" />
                       
                     @if($errors->has('tags'))
                       <div class="text-danger mt-2 ml-2">

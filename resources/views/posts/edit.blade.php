@@ -68,41 +68,21 @@ input.form-control{
                     @endif
 
                 </div>
-                <div class="row">
 
-                  <div class="col-sm-6 col-lg-6 col-md-6">
+                <div class="form-group">
 
-                      <div class="form-group">
+                    <select class="form-control" name="category">
+                        <option value="">Please select a category</option>
+                        @foreach(App\Category::all() as $cat)
+                          <option value="{{$cat->id}}" {{ (old("category",$post->category_id) == $cat->id ? "selected":"") }}>{{$cat->name}}</option>
+                        @endforeach
+                    </select>
 
-                          <select class="form-control" name="category">
-                              <option value="">Please select a category</option>
-                              @foreach(App\Category::all() as $cat)
-                                <option value="{{$cat->id}}" {{ (old("category",$post->category_id) == $cat->id ? "selected":"") }}>{{$cat->name}}</option>
-                              @endforeach
-                          </select>
-
-                          @if($errors->has('category'))
-                            <div class="text-danger mt-2 ml-2">
-                              <strong class="">{{$errors->first('category')}}</strong>
-                            </div>
-                          @endif
+                    @if($errors->has('category'))
+                      <div class="text-danger mt-2 ml-2">
+                        <strong class="">{{$errors->first('category')}}</strong>
                       </div>
-                      
-                  </div>
-
-                  <div class="col-sm-6 col-lg-6 col-md-6">
-                    <div class="form-group">
-                        <input type="text" value="{{old('tags',$post->tags)}}" name="tags" class="form-control" data-role="tagsinput" />
-                          
-                        @if($errors->has('tags'))
-                          <div class="text-danger mt-2 ml-2">
-                            <strong class="">{{$errors->first('tags')}}</strong>
-                          </div>
-                        @endif
-
-                    </div>
-                  </div>
-
+                    @endif
                 </div>
                
 
@@ -114,6 +94,18 @@ input.form-control{
                         <strong class="">{{$errors->first('description')}}</strong>
                       </div>
                     @endif
+                </div> 
+
+                
+                <div class="form-group">
+                    <input type="text" value="{{old('tags',$post->tags)}}" name="tags" class="form-control" data-role="tagsinput" placeholder="Add Tags" />
+                      
+                    @if($errors->has('tags'))
+                      <div class="text-danger mt-2 ml-2">
+                        <strong class="">{{$errors->first('tags')}}</strong>
+                      </div>
+                    @endif
+
                 </div>
 
                 <hr>

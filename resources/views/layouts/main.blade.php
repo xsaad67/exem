@@ -17,6 +17,7 @@
 
     {{-- <link rel="stylesheet" type="text/css" href="{{ asset('css/unused.min.css') }}"> --}}
 
+
   @yield('css')
 </head>
 
@@ -35,7 +36,7 @@
                     <div class="header-row-layout">
                         <div class="header-col header-l">
                             <a id="menu-button" class="header-item bb-header-icon menu-button pos-left" role="button" href="#"> 
-                                <i class="bb-ui-icon-burger-menu"></i> 
+                                <i class="bb-ui-icon-burger-menu"></i>
                             </a>
                         </div>
                         <div class="header-col header-c">
@@ -49,8 +50,17 @@
                         </div>
                         <div class="header-col header-r">
                             <div class="header-item bb-header-user-box bb-toggle pos-right">
-                                <a class="bb-header-icon js-authentication" role="button" data-toggle=".bb-header-user-box .menu" href="/login"> <i class="bb-icon bb-ui-icon-user"></i> </a>
-                            </div>
+                                <div class="dropdown">
+                                    <a class="bb-header-icon dropdown-toggle" data-toggle="dropdown"> <i class="bb-icon bb-ui-icon-user"></i> </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                      <a class="dropdown-item mt-2">Create Post</a>
+                                      <a class="dropdown-item mt-2">Edit Profile</a>
+                                      <a class="dropdown-item mt-2">My Posts</a>
+                                      <a class="dropdown-item mt-2">My Votes</a>
+                                      <a class="dropdown-item mt-2">My Comments</a>
+                                    </div>
+                                </div>
+                            </div> 
                         </div>
                     </div>
                 </div>

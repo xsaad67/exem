@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('avatar')->nullable();
             $table->string('slug')->unique();
             $table->string('password');
+            $table->text('profiles')->nullable();
             $table->mediumText('bio')->nullable();
             $table->string('facebook_id')->nullable();
             $table->string('google_id')->nullable();

@@ -3,7 +3,38 @@
 
 @section('css')
 
+<style>
+#object-nav > ul{
+    display:block;
+   list-style:none;
 
+    overflow: visible;
+    border-bottom: 2px solid #ececec;
+}
+#object-nav > ul > li{
+    color: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18px;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    padding: 15px 13px;
+    background: 0 0;
+    text-align: center;
+    white-space: nowrap;
+
+}
+
+#object-nav > ul > li > a:hover{
+    color:#000;
+    font-size:16px;
+}
+#object-nav > ul > li.current >a{
+    color:#000;
+    font-size:16px;
+}
+</style>
 @endsection
 
 @section('content')
@@ -13,18 +44,49 @@
     <div class="row">
         <div class="col-lg-7 col-md-7 col-sm-7 offset-lg-1 col-12 mt-5">
 
+        <div id="item-nav" class="mb-5">
+            <div id="object-nav" role="navigation">
+                <ul>
+                    <li id="activity-personal-li" class="current selected">
+                        <a id="user-activity" href="https://boombox.px-lab.com/another-gag/members/kathynewman/activity/">Activity</a>
+                    </li>
+                    <li id="xprofile-personal-li">
+                        <a id="user-xprofile" href="https://boombox.px-lab.com/another-gag/members/kathynewman/profile/"><i>"\f007"</i>Profile</a>
+                    </li>
+                    <li id="submissions-personal-li">
+                        <a id="user-submissions" href="https://boombox.px-lab.com/another-gag/members/kathynewman/submissions/">Submissions</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+            @if(session('success'))
+                <div class="alert alert-success mt-2 mb-4 text-center">
+                    {{session('success')}}
+                </div>
+            @endif
+       
+
             @foreach($user->posts as $post)
+
                 <div class="bb-post-collection hfeed post-list standard bb-thumbnail-stretched bb-media-playable">
                     <ul id="post-items" class="post-items">
                         <li class="post-item post-item-stream">
                             <article class="post">
-                                 <a href="{{$post->user->link}}">
+                                <a href="{{$post->user->link}}">
                                     <img alt="{{ $post->user->name }}" src="{{ $post->user->dp }}" 
                                     class="avatar avatar-66 photo" height="66" width="66" itemprop="image">
                                 </a>
+
+                              
                                 <span>
                                     Posted By <a href="{{$post->user->link}}">{{$post->user->name}}</a> at {{$post->created_at->diffForHumans()}}
                                 </span>
+
+                                @can('update', $post)
+                                    <a class="float-right btn btn-danger ml-2" href="{{url('/post/delete/'.$post->id)}}">Delete Post</a>
+                                    <a class="float-right btn btn-primary" href="{{url('/post/edit/'.$post->id)}}">Edit Post</a>
+                                @endcan
                                 <h2 class="entry-title">
                                     <a href="{{$post->link}}" rel="bookmark">{{$post->title}}</a>
                                 </h2>
@@ -102,6 +164,14 @@
 
         <div class="col-lg-3 col-md-3 col-sm-3 col-12 mt-5  ml-auto mx-auto text-center">
             <img src="{{ is_null($user->avatar) ? \Avatar::create($user->name)->setBackground('#f13544')->setBorder(0, '#aabbcc')->setFontSize(82)->setDimension(200)->toBase64() :  asset('img/avatars/'.$user->avatar) }}" class="img-fluid img-avatar" >
+
+            <h2 class="mt-2">{{ucwords($user->name)}}</h2>
+
+            <hr>
+            <p>Member since {{$user->created_at->diffForHumans()}}</p>
+
+            <h6>Total Posts: {{$user->posts->count()}}</h6>
+            <h6>Total Comments: {{ $user->comments->count()}}</h6>
         </div>
 
     </div>

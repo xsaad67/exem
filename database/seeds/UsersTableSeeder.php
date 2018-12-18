@@ -713,6 +713,22 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => NULL,
                 'created_at' => '2018-12-11 05:58:19',
                 'updated_at' => '2018-12-11 05:58:50',
+            ), 
+            array (
+                'id' => 42,
+                'name' => 'Joe Doe',
+                'email' => 'jondoe@example.com',
+                'avatar' => NULL,
+                'slug' => 'joe-doe',
+                'password' => '$2y$10$ylaNOsfXA7.0Bke77oFcoOz.0rHifeWyuqweUdTkRPAsikxX.vpo.',
+                'bio' => NULL,
+                'facebook_id' => NULL,
+                'google_id' => NULL,
+                'is_active' => 0,
+                'is_admin' => 1,
+                'remember_token' => NULL,
+                'created_at' => '2018-12-11 05:58:19',
+                'updated_at' => '2018-12-11 05:58:50',
             ),
         ));
         

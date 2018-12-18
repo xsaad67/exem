@@ -9,11 +9,14 @@ use App\Traits\Follow\CanBeFavorited;
 use App\Traits\Follow\CanBeVoted;
 use Spatie\Activitylog\Traits\LogsActivity;
 use App\Traits\Sluggable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Post extends Model
 {
-    use CanBeLiked, CanBeFavorited, CanBeVoted, LogsActivity, Sluggable;
+  use CanBeLiked, CanBeFavorited, CanBeVoted, LogsActivity, Sluggable,SoftDeletes;
 
   protected $fillable = ['source'];
+  protected $dates = ['deleted_at'];
   
 public function sluggable() {
   return ['source' => 'title'];
