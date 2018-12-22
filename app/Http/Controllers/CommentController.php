@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -60,8 +61,7 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        
-        return view('comments.show');
+        return view('comments.show',compact("comment"));
     }
 
     /**
@@ -84,7 +84,21 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+
+        $this->authorize('update', $comment);
+        $request->validate([
+            'comment' => 'required|min:5',
+        ],[
+            'comment.required' => 'Comment must be greater than 5 characters',
+            'comment.min' => 'Comment body must be greater than 5 characters',
+        ]);    
+
+
+        $comment->body = $request->comment;
+        $comment->update();
+
+        return response()->json(['success'=>true,'html'=>$comment->body]);
+
     }
 
     /**
@@ -95,6 +109,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
-        //
+        $isDelete = $comment->delete();
+        return response()->json(['success'=>true]);
     }
 }

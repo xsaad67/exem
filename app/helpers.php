@@ -22,6 +22,24 @@ if(!function_exists('thousandsCurrencyFormat')){
 	}
 }
 
+
+function trackActivity($post,$randUser,$log="created",$logName = "default"){
+    $user = \App\User::find($randUser);
+    activity()
+        ->enableLogging()
+        ->useLog($logName)
+        ->performedOn($post)
+        ->causedBy($user)
+        ->log($log);
+}
+
+
+function randomExcept( $min=1, $max=10, $exclude = []){
+	$n=1;
+	while( in_array( ($n = rand($min,$max)), $exclude ) ); 
+	return $n;
+}
+
 function checkThreeDots($str, $word="...")
 {
     return strpos($str,$word) !== false ? true : false; 

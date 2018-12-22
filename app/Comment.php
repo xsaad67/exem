@@ -9,6 +9,8 @@ class Comment extends Model
 {
  	
  	use LogsActivity;
+
+ 	protected static $logName = 'comment';
  		  
    	protected $with = ['user'];
 

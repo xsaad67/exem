@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Post;
+use App\Comment;
 use App\Policies\PostPolicy;
+use App\Policies\CommentPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 

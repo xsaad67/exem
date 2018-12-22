@@ -18,6 +18,8 @@ class User extends Authenticatable
 {
     use CanFollow, CanBeFollowed, CanFavorite, CanSubscribe, Sluggable, CanVote, LogsActivity, Notifiable;
 
+    protected static $logName = 'user';
+
     public function sluggable() {
         return [
           'source' => 'name',

@@ -19,4 +19,22 @@ class CommentPolicy
     {
         //
     }
+
+    public function before($user){
+        return $user->isAdmin() ? true : false;
+    }
+
+
+    /**
+     * Determine if the given comment can be updated by the user.
+     *
+     * @param  \App\User  $user
+     * @param  \App\Comment  $comment
+     * @return bool
+     */
+    public function update(User $user, Comment $comment)
+    {
+        // dd($comment->user_id);
+        return $user->id == $comment->user_id;
+    }
 }

@@ -98,7 +98,7 @@
 
                                 <span class="count"> 
                                      <span class="text" id="count{{$post->id}}" label="points">
-                                        {{$post->fakeUpVotes + count($post->upvoters)}}
+                                        {{ $post->fakeUpVotes + count($post->upvoters) }}
                                     </span> 
                                 </span>
 
@@ -195,44 +195,109 @@
 @endsection
 
 @section('footer')
-    <script src="{{asset('js/admin-ajax.js')}}"></script>
+<script src="{{asset('js/admin-ajax.js')}}"></script>
     
-    <script>
+<script>
 
-        $(function(){
-            var commentUrl = "{{action('CommentController@store')}}";
+    $(function(){
+        var commentUrl = "{{action('CommentController@store')}}";
+
+        $("#create-comment").click(function(){
+            
+          
+            var comment = $("#postComment").val();
+            var postId = $("#commentPostId").val();
+            $("#loadingComment").removeClass("hide");
+
+            $.ajax({
+                type:'POST',
+                url:commentUrl,
+                data:{ post: postId, comment : comment},
+                context: this,
+                success:function(data){
+                    $("#loadingComment").addClass("hide");
+                   $('#comment-errors').html('');
+                    $(".comments").prepend(data.html);
+                },
+                error: function (xhr) {
+                    
+                    $("#loadingComment").addClass("hide");
+                   $('#comment-errors').html('');
+                    $.each(xhr.responseJSON.errors, function(key,value) {
+                        $('#comment-errors').append('<div class="alert alert-danger">'+value+'</div');
+                    }); 
+                },
+            });
+        });
 
 
+        $(document).on('click', '.btn_commentDelete', function(){
+           var commentSelector = $(this).closest('div.comment');
+           var commentId = commentSelector.attr("id").match(/\d+/);
+           commentSelector.addClass("opacity-delete");
 
-            $("#create-comment").click(function(){
-                
-              
-                var comment = $("#postComment").val();
-                var postId = $("#commentPostId").val();
-                $("#loadingComment").removeClass("hide");
+           $.ajax({
+                type: 'DELETE',
+                url:"/comment/"+commentId,
+                context: this,
+                success:function(data){
+                    commentSelector.fadeOut(300, function() { $(this).remove(); });
+                },
+                error: function (xhr) {
+                   commentSelector.removeClass("opacity-delete");
+                },
+            });
 
-                  $.ajax({
-                    type:'POST',
-                    url:commentUrl,
-                    data:{ post: postId, comment : comment},
-                    context: this,
-                    success:function(data){
-                        $("#loadingComment").addClass("hide");
-                       $('#comment-errors').html('');
-                        $(".comments").prepend(data.html);
-                    },
-                    error: function (xhr) {
-                        
-                        $("#loadingComment").addClass("hide");
-                       $('#comment-errors').html('');
-                        $.each(xhr.responseJSON.errors, function(key,value) {
-                            $('#comment-errors').append('<div class="alert alert-danger">'+value+'</div');
-                        }); 
-                    },
-                });
-            })
+        });
+
+
+        $(document).on('click', '.btn_commentEdit', function(){ 
+            var commentSelector = $(this).closest('div.comment').attr("id");
+            var commentId = commentSelector.match(/\d+/);
+            var comment = $("#"+commentSelector).find(".comment-content > p").html();
+            var htmlInput = '<textarea name="comment" id="editComment-'+commentId+'" class="col-12 mb-2">'+comment+'</textarea>';
+            $("#"+commentSelector).find(".comment-content").html(htmlInput);
+
+            $(this).removeClass("btn_commentEdit").addClass("btn_commentUpdate");
+            $(this).html("Update");
+            
+        }); 
+
+        $(document).on('click', '.btn_commentUpdate', function(){ 
+            var commentSelector = $(this).closest('div.comment').attr("id");
+            var commentId = commentSelector.match(/\d+/);
+            var comment = $("#editComment-"+commentId).val();
+
+
+            $.ajax({
+                type: 'PATCH',
+                url:"/comment/"+commentId,
+                data:{comment : comment},
+                context: this,
+                success:function(data){
+                    $("#"+commentSelector).find(".comment-content").html("<p>"+data.html+"</p>");
+                    $(this).removeClass("btn_commentUpdate").addClass("btn_commentEdit");
+                    $(this).html("Edit");
+                    $('#comment-errors-'+commentId).html('');
+                },
+                error: function (xhr) {
+                     $('#comment-errors-'+commentId).html('');
+                    $.each(xhr.responseJSON.errors, function(key,value) {
+                        $('#comment-errors-'+commentId).append('<div class="alert alert-danger">'+value+'</div');
+                    }); 
+
+                },
+            });
+
+         
         });
 
         
-    </script>
+
+
+
+    });
+
+    
+</script>
 @endsection

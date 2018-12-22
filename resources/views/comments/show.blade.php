@@ -1,7 +1,7 @@
 
-<div id="comment-{{ $comment->id }}" class="comment byuser comment-author-admin_boombox even thread-even depth-1 parent">
+<div id="comment-{{ $comment->id }}" class="comment byuser comment-author-admin_boombox even thread-even depth-1 parent ">
 
-    <article id="comment-{{ $comment->id }}" class="comment-body">
+    <article id="comment-{{ $comment->id }}" class="comment-body ">
 
         <footer class="comment-meta">
             <div class="comment-author vcard"> 
@@ -11,18 +11,33 @@
                         {{ ucwords($comment->user->name) }}
                     </a>
                 </b> 
-                <span class="says">says:</span>
+               
+
+
             </div>
 
             <div class="comment-metadata">
-                    <time datetime="{{ $comment->created_at->format('Y-m-d\TH:i:s') }}"> {{ $comment->created_at->diffForHumans() }} </time>
-                
+                <time datetime="{{ $comment->created_at->format('Y-m-d\TH:i:s') }}"> {{ $comment->created_at->diffForHumans() }} </time>
             </div>
         </footer>
-        <div class="comment-content">
+        
+        <div class="comment-content mt-2">
             <p>{{ $comment->body }}</p>
         </div>
-        <br>
 
+        @can('update',$comment) 
+
+            <div class="d-flex flex-row-reverse">
+                <button class="btn btn-danger ml-2 btn_commentDelete">Delete</button>
+                <button class="btn btn-info ml-2 btn_commentEdit">Edit</button>
+            </div>
+
+            <div id="comment-errors-{{$comment->id}}" class="ajaxErrors"></div>
+
+        @endcan
+
+       
+
+        
     </article>
 </div>

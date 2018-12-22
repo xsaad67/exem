@@ -15,80 +15,13 @@ ini_set('max_execution_time', 480);
 class CrawlController extends Controller
 {
 
+    private  $randCategoryId;
 
-
-    public function randomUsers(){
-
-        //Get User Info first and put them into session array
-    	$array  = [];
-    	$html = "https://randomuser.me/api/?results=40&inc=name,gender,nat,picture,email&nat=us,gb";
-    	$json = json_decode(file_get_contents($html));
-
-    	foreach($json->results as $key=>$row){
-
-    		$array[] = [
-    					"name" => $row->name->first . " " .$row->name->last,
-    					"email" => $row->email,
-    					"avatar" => $row->picture->medium
-        			];
-    	}
-
-        //Putting data into session array
-    	session()->put("users",$array);
-
-
-        //Save stored session into user table
-    	foreach(session()->get('users') as $key=>$row){
-
-            
-            $user = new User();
-            $user->name = $row['name'];
-            $user->email = $row['email'];
-            $user->avatar = $fileName;
-            $user->password = bcrypt("secret");
-            $fileName = FileFromExternalUrl($row['avatar'],'avatar');
-    	 	$folderName = "img/avatars/";
-    	 	$image = file_get_contents($row['avatar']);
-
-			file_put_contents(public_path($folderName.$fileName), $image);
-    	    $user->save();
-    	 }
-    
+    public function __construct(){
+        $this->randCategoryId = randomExcept(1,Category::count(),[6]);
     }
 
 
-
-    public function randomBio(){
-        $url = "https://shortstatusquotes.com/facebook-bio-status-quotes-about-me/";
-        $crawler = Goutte::request('GET', $url);
-        $crawler->filter('p.sq')->each(function ($node) {
-            dump($node->text());
-        });
-    }
-
-
-    public function reddit(){
-
-        $topUrl = "http://reddit.com/r/creepy.json?limit=50";
-        $new = "https://www.reddit.com/r/creepy/new.json?sort=new";
-        $newSortLimit = "https://www.reddit.com/r/creepy/new.json?sort=new&limit=60";
-
-
-        $link = "https://www.reddit.com/r/story.json?limit=5";
-        $json = json_decode(file_get_contents($link));
-        
-
-        foreach ($json->data->children as $child) {
-            echo $child->data->title;
-            echo "<br>";
-            echo $child->data->selftext_html;
-            echo "<br>";
-            echo $child->data->url;
-            echo "<br>";
-        }
-
-    
-}
    
 
 /**
@@ -103,55 +36,72 @@ class CrawlController extends Controller
 * @return void
 */
 
+
+public function constructUrlAndCategory($direct,$url,$prefixUrl="",$requestedCategory=NULL,$suffix=NULL){
+    $returnArray = [
+        "url" => $url.$suffix,
+        "category_id" => $this->randCategoryId,
+    ];
+
+    if(!is_null($direct)){ return $returnArray; }
+
+    if(!is_null($requestedCategory)){
+        $category = Category::where('name','LIKE',"%".$requestedCategory."%")->first();
+
+        $construct_url = $url.$prefixUrl.$requestedCategory.$suffix;
+
+        if(is_null($category)){
+            $randomCategory = Category::find($this->randCategoryId);
+            $construct_url = $url.$prefixUrl.$randomCategory->name.$suffix;
+
+            $returnArray['url'] = $construct_url;
+            $returnArray['category_id'] = $randomCategory->id;
+
+            return $returnArray;
+        }
+        else{
+
+            $returnArray['url'] = $construct_url;
+            $returnArray['category_id'] = $category->id;
+
+            return $returnArray;
+        }
+    }else{
+        return $returnArray;
+    }
+}
+
+
 public function fml(){
 
-    $requestedCategory = request('category');
-    $pageProceed = is_null(request('page')) ? 1 :  request('page');
-
-
-    $randFlag = is_null($requestedCategory) ? TRUE : FALSE;
-    $construct_url ="";
-    $category_id="";
-
-    if(!$randFlag){
-
-        $construct_url = is_null($requestedCategory) ? "" : "search/".$requestedCategory;
-        $category = Category::where('name','LIKE',"%".$requestedCategory."%")->first();
-      
-        if(is_null($category)){
-            return "Category doesn't exist ".$requestedCategory;
-        }else{
-           
-            $category_id = $category->id;
-            echo $category_id;
-        }
-
-    }
-
-    
-    $url = is_null(request('direct_url')) ? "https://www.fmylife.com/".$construct_url."?page=".$pageProceed : request('direct_url');
-
-    echo $url;
-
-    // dd($randFlag);
+    $constructArray = $this->constructUrlAndCategory(request("direct"),"https://fmylife.com","/search/",request("category"),"?page=".request("page"));
+    $url = $constructArray['url'];
+    $category_id = $constructArray['category_id'];
 
     $crawler = Goutte::request('GET', $url);
 
-    $crawler->filter('div.panel-content > p.block > a')->each(function ($node) use ($randFlag,$category_id){
+    $crawler->filter('div.panel-content > p.block > a')->each(function ($node) use ($category_id){
 
         $description = str_replace("\n","",$node->text());
         if(!str_contains($description,'...') && strlen($description)>40){
 
+            activity()->disableLogging();
+            $randUser = rand(1,8);
             $post = Post::firstOrNew( ['source'=>"https://www.fmylife.com".$node->attr('href')] );
             $post->title=truncateString($description,50);
-            $post->category_id= ($randFlag == TRUE) ? rand(1,Category::count()) : $category_id;
+            $post->category_id= $category_id;
             $post->description=$description;
             $post->website = 'fmylife.com';
-            $post->user_id = rand(1,8);
+            $post->user_id = $randUser;
             $post->visitors = rand(100,300);
             $post->fakeUpVotes = rand(20,50);
             $post->fakeDownVotes = rand(0,10);
-            $post->save();
+            $isSave = $post->save();
+
+            if($isSave){
+              trackActivity($post,$randUser);
+            }
+
         }
 
     });
@@ -159,34 +109,27 @@ public function fml(){
 
 
 
+
+
 public function crawl_9gag(Request $request)
 {
 
 
-    $requestedCategory = $request->category;
+    $matchedUrl = "https://9gag.com/v1/";
 
-    $randFlag = is_null($requestedCategory) ? TRUE : FALSE;
-    $construct_url ="";
-    $category_id="";
+    $constructArray = $this->constructUrlAndCategory(request("direct"),$matchedUrl,"search-posts?query=",request("category"),"?c=".request("page"));
+    $url = $constructArray['url'];
+    $category_id = $constructArray['category_id'];
+    
+    $directUrl = preg_replace('/\?.*/', '', $url);
 
-    if(!$randFlag){
-
-        $construct_url = is_null($requestedCategory) ? "" : "search-posts?query=".$requestedCategory;
-        $category = Category::where('name','LIKE',"%".strtolower(trim($requestedCategory))."%")->first();
-      
-        if(is_null($category)){
-            return "Category doesn't exist ".$requestedCategory;
-        }else{
-            $category_id = $category->id;
-        }
-
+    if( $directUrl == $matchedUrl){
+        $directUrl .= "group-posts/group/default/type/hot?c=".request("page");
+        $url =$directUrl;
     }
 
-
-    $url = ($randFlag == true) ? "https://9gag.com/v1/group-posts/group/default/type/hot?after=&c=30" : "https://9gag.com/v1/search-posts?query=".$requestedCategory."&c=20";
-    
-    dump($url);
     $json = json_decode(file_get_contents($url));
+    dd($json);
  
 
     foreach($json->data->posts as $data){
@@ -213,7 +156,11 @@ public function crawl_9gag(Request $request)
             $post->visitors = rand(100,300);
             $post->fakeUpVotes = rand(20,50);
             $post->fakeDownVotes = rand(0,10);
-            $post->save();
+            $isSave = $post->save();
+
+            if($isSave){
+              trackActivity($post,$randUser);
+            }
         }
 
     }
@@ -256,6 +203,81 @@ public function short_stories(){
 //     $crawler = Goutte:::request('GET',$url);
     
 // }
+
+
+
+
+    public function randomUsers(){
+
+        //Get User Info first and put them into session array
+        $array  = [];
+        $html = "https://randomuser.me/api/?results=40&inc=name,gender,nat,picture,email&nat=us,gb";
+        $json = json_decode(file_get_contents($html));
+
+        foreach($json->results as $key=>$row){
+
+            $array[] = [
+                        "name" => $row->name->first . " " .$row->name->last,
+                        "email" => $row->email,
+                        "avatar" => $row->picture->medium
+                    ];
+        }
+
+        //Putting data into session array
+        session()->put("users",$array);
+
+
+        //Save stored session into user table
+        foreach(session()->get('users') as $key=>$row){
+
+            
+            $user = new User();
+            $user->name = $row['name'];
+            $user->email = $row['email'];
+            $user->avatar = $fileName;
+            $user->password = bcrypt("secret");
+            $fileName = FileFromExternalUrl($row['avatar'],'avatar');
+            $folderName = "img/avatars/";
+            $image = file_get_contents($row['avatar']);
+
+            file_put_contents(public_path($folderName.$fileName), $image);
+            $user->save();
+         }
+    
+    }
+
+
+
+    public function randomBio(){
+        $url = "https://shortstatusquotes.com/facebook-bio-status-quotes-about-me/";
+        $crawler = Goutte::request('GET', $url);
+        $crawler->filter('p.sq')->each(function ($node) {
+            dump($node->text());
+        });
+    }
+
+
+    public function reddit(){
+
+        $topUrl = "http://reddit.com/r/creepy.json?limit=50";
+        $new = "https://www.reddit.com/r/creepy/new.json?sort=new";
+        $newSortLimit = "https://www.reddit.com/r/creepy/new.json?sort=new&limit=60";
+
+
+        $link = "https://www.reddit.com/r/story.json?limit=5";
+        $json = json_decode(file_get_contents($link));
+        
+
+        foreach ($json->data->children as $child) {
+            echo $child->data->title;
+            echo "<br>";
+            echo $child->data->selftext_html;
+            echo "<br>";
+            echo $child->data->url;
+            echo "<br>";
+        }
+    }
+
 
 
 }

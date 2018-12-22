@@ -58,17 +58,23 @@ class PostController extends Controller
             'tags' => 'required'      
                                    
         ]);
-
-         $post = new Post();
-         $post->title= $request->title;
-         $post->user_id = auth()->id();
-         $post->category_id = $request->category;
-         $post->description =$request->description;
-         $post->tags = $request->tags;
+        
+        $post = new Post();
+        $post->title= $request->title;
+        $post->user_id = is_null($request->user_id) ? auth()->id() : $request->user_id;
+        $post->category_id = $request->category;
+        $post->description =$request->description;
+        $post->tags = $request->tags;
          
-         $isSave = $post->save();
-         $post =  $post->append('link');
-         return redirect($post->link)->withSuccess("Your post has been successfully created");
+        $isSave = $post->save();
+        $post =  $post->append('link');
+
+        if($isSave){
+            if(!is_null($request->user_id)){
+                trackActivity($post,$post->user_id,$log="created");
+            }
+            return redirect($post->link)->withSuccess("Your post has been successfully created");
+        }
 
     }
 
@@ -81,7 +87,6 @@ class PostController extends Controller
     public function show($post)
     {
         $post = Post::with("comments")->where('slug', $post)->firstOrFail();
-        //return $post;
         $post->increment('visitors',1);
         return view('posts.show',compact('post'));
     }
@@ -107,6 +112,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+
         $this->authorize('update', $post);
 
         $minDesc = 5;
@@ -122,15 +128,28 @@ class PostController extends Controller
                                    
         ]);
 
+
+        //Disabling activity log if explicitly provided by admin
+        if(!is_null($request->user_id)){
+            activity()->disableLogging();
+        }
+
         $post->title= $request->title;
-        $post->user_id = auth()->id();
+        $post->user_id = is_null($request->user_id) ? auth()->id() : $request->user_id;
         $post->category_id = $request->category;
         $post->description =$request->description;
         $post->tags = $request->tags;
          
         $isSave = $post->save();
         $post =  $post->append('link');
-        return redirect($post->link)->withSuccess("Your post has been successfully updated");
+
+
+        if($isSave){            
+            if(!is_null($request->user_id)){
+                trackActivity($post,$post->user_id,$log="updated");
+            }
+            return redirect($post->link)->withSuccess("Your post has been successfully updated");
+        }
     }
 
     /**
@@ -142,14 +161,27 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $this->authorize('update', $post);
+        
         \Spatie\Activitylog\Models\Activity::where('subject_id',$post->id)->delete();
         $returnUrl = $post->user->link;
         $postName = $post->title;
         $isDelete = $post->delete();
 
+        if(auth()->user()->isAdmin()){
+            $returnUrl = url('/super/all-posts');
+            $userName = ucwords($post->user->name);
+           return ($isDelete == true) ? redirect($returnUrl)->withSuccess("You've successfully deleted ".$userName." post titled ". $postName) :  redirect($returnUrl)->withError("Sorry we can't delete your post titled ". $postName. " at this moment");
+        }
         return ($isDelete == true) ? redirect($returnUrl)->withSuccess("Your post titled ". $postName. " has been deleted") :  
                 redirect($returnUrl)->withError("Sorry we can't delete your post titled ". $postName. " at this moment");
     }
+
+
+
+
+
+
+
 
     /**
      * Upload Images on wysiwyg

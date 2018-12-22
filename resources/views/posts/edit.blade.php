@@ -84,7 +84,24 @@ input.form-control{
                       </div>
                     @endif
                 </div>
-               
+
+
+                @if(auth()->user()->isAdmin())
+                  <div class="form-group">
+                    <select class="form-control" name="user_id">
+                        <option value="">Please select a User if no user provided you will be choosen as a user</option>
+                        @foreach(App\User::latest()->get() as $user)
+                          <option value="{{$user->id}}" {{ (old("user_id",$post->user_id) == $user->id ? "selected":"") }}>{{$user->name}}</option>
+                        @endforeach
+                    </select>
+
+                    @if($errors->has('user_id'))
+                      <div class="text-danger mt-2 ml-2">
+                        <strong class="">{{$errors->first('user_id')}}</strong>
+                      </div>
+                    @endif
+                  </div>
+                @endif
 
                 <div class="form-group">
                     <textarea name="description" class="form-control" id="description">{!! old('description',$post->description) !!}</textarea>

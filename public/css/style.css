@@ -8070,7 +8070,6 @@ label {
     position: relative;
     display: block;
     list-style: none;
-    border-top: 1px solid #f4f3f3
 }
 
 #comments .comment:first-child,
@@ -14718,5 +14717,6 @@ iframe.instagram-media {
     color: #5bc0de
 }
 
+.opacity-delete{ opacity:0.2 !important; }
 
 /*# sourceMappingURL=style.min.css.map */
