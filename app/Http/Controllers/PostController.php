@@ -20,7 +20,6 @@ class PostController extends Controller
 
     public function index()
     {  
-
         $posts = Post::with('upvoters','downvoters','user')->inRandomOrder()->paginate(20);
         return view('posts.index',compact('posts'));
     }
@@ -146,7 +145,7 @@ class PostController extends Controller
 
         if($isSave){            
             if(!is_null($request->user_id)){
-                trackActivity($post,$post->user_id,$log="updated");
+                trackActivity($post,$post->user_id,$log="created");
             }
             return redirect($post->link)->withSuccess("Your post has been successfully updated");
         }
@@ -163,14 +162,15 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $this->authorize('update', $post);
+
+        $post->activities()->delete();
         
-        \Spatie\Activitylog\Models\Activity::where('subject_id',$post->id)->delete();
         $returnUrl = $post->user->link;
         $postName = $post->title;
         $isDelete = $post->delete();
 
         if(auth()->user()->isAdmin()){
-            $returnUrl = url('/super/all-posts');
+            $returnUrl = url('/super/posts');
             $userName = ucwords($post->user->name);
            return ($isDelete == true) ? redirect($returnUrl)->withSuccess("You've successfully deleted ".$userName." post titled ". $postName) :  redirect($returnUrl)->withError("Sorry we can't delete your post titled ". $postName. " at this moment");
         }

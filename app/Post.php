@@ -18,7 +18,8 @@ class Post extends Model
 
   protected $fillable = ['source'];
   protected $dates = ['deleted_at'];
-   protected static $logName = 'system';
+
+  protected static $logName = 'post';
   
   public function sluggable() {
     return ['source' => 'title'];
@@ -49,6 +50,10 @@ class Post extends Model
 
   public function getTitleAttribute($value){
     return $this->attributes['title'] = ucwords(strtolower($value));
+  }
+
+  public function activities(){
+    return $this->morphMany('Spatie\Activitylog\Models\Activity', 'subject');
   }
 
 

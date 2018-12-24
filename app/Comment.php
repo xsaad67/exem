@@ -7,7 +7,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Comment extends Model
 {
- 	
+
  	use LogsActivity;
 
  	protected static $logName = 'comment';
@@ -18,8 +18,11 @@ class Comment extends Model
     	return $this->belongsTo(User::class);
     }
 
-
     public function post(){
     	return $this->belongsTo(Post::class);
     }
+
+   	public function activities(){
+    	return $this->morphMany('Spatie\Activitylog\Models\Activity', 'subject');
+  	}
 }

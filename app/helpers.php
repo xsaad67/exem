@@ -23,7 +23,7 @@ if(!function_exists('thousandsCurrencyFormat')){
 }
 
 
-function trackActivity($post,$randUser,$log="created",$logName = "default"){
+function trackActivity($post,$randUser,$log="created",$logName = NULL){
     $user = \App\User::find($randUser);
     activity()
         ->enableLogging()
@@ -42,7 +42,7 @@ function randomExcept( $min=1, $max=10, $exclude = []){
 
 function checkThreeDots($str, $word="...")
 {
-    return strpos($str,$word) !== false ? true : false; 
+    return strpos($str,$word) !== false ? true : false;  
 }
 
 
