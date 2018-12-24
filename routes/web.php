@@ -45,8 +45,9 @@ Route::prefix('crawl')->group(function () {
 
 
 Route::group(['middleware' => ['admin'], 'prefix' => 'super'], function () {
-	Route::get('/dashboard','Admin\AdminController@index')->name('dashboard');
-  Route::get("/all-posts",'Admin\AdminController@displayPosts');
+	Route::get('/','Admin\AdminController@index')->name('dashboard');
+  Route::resource("/posts",'Admin\PostController');
+  Route::resource("/categories",'Admin\CategoryController');
 });
 
 

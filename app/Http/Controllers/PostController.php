@@ -21,7 +21,7 @@ class PostController extends Controller
     public function index()
     {  
 
-        $posts = Post::with('upvoters','downvoters','user')->latest()->paginate(20);
+        $posts = Post::with('upvoters','downvoters','user')->inRandomOrder()->paginate(20);
         return view('posts.index',compact('posts'));
     }
 
@@ -152,6 +152,8 @@ class PostController extends Controller
         }
     }
 
+    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -175,12 +177,6 @@ class PostController extends Controller
         return ($isDelete == true) ? redirect($returnUrl)->withSuccess("Your post titled ". $postName. " has been deleted") :  
                 redirect($returnUrl)->withError("Sorry we can't delete your post titled ". $postName. " at this moment");
     }
-
-
-
-
-
-
 
 
     /**

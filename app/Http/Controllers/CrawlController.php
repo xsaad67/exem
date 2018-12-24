@@ -37,7 +37,10 @@ class CrawlController extends Controller
 */
 
 
-public function constructUrlAndCategory($direct,$url,$prefixUrl="",$requestedCategory=NULL,$suffix=NULL){
+public function constructUrlAndCategory($direct,$url,$prefixUrl="",$requestedCategory=NULL,$suffix=NULL,$directUrl=NULL){
+    if(!is_null($directUrl)){
+        $url =$directUrl;
+    }
     $returnArray = [
         "url" => $url.$suffix,
         "category_id" => $this->randCategoryId,
@@ -128,8 +131,9 @@ public function crawl_9gag(Request $request)
         $url =$directUrl;
     }
 
+
     $json = json_decode(file_get_contents($url));
-    dd($json);
+
  
 
     foreach($json->data->posts as $data){
@@ -140,7 +144,7 @@ public function crawl_9gag(Request $request)
 
             $post->title = str_limit($data->title, $limit = 180, $end="...");
             $post->link = $data->url;
-            $post->category_id= ($randFlag == TRUE) ? rand(1,Category::count()) : $category_id;
+            $post->category_id= $category_id;
 
             $url = $data->images->image700->url;
 
@@ -159,7 +163,7 @@ public function crawl_9gag(Request $request)
             $isSave = $post->save();
 
             if($isSave){
-              trackActivity($post,$randUser);
+              trackActivity($post,$post->user_id);
             }
         }
 
@@ -168,6 +172,12 @@ public function crawl_9gag(Request $request)
 }
 
 public function short_stories(){
+
+      $constructArray = $this->constructUrlAndCategory(request("direct"),"https://www.short-story.me/stories/general-stories","/",request("category"));
+      $url = $constructArray['url'];
+      $category_id = $constructArray['category_id'];
+
+      dd($category_id);
     $url = "https://www.short-story.me/stories/general-stories";
     
     $crawler = Goutte::request('GET', $url);

@@ -20,6 +20,15 @@
                 <!-- title and toolbar -->
                 <div class="d-md-flex align-items-md-start">
                   <h1 class="page-title mr-sm-auto"> All Posts </h1><!-- .btn-toolbar -->
+
+                   <div class="btn-toolbar">
+                    <a href="{{url('/post/create')}}" target="_blank">
+                      <button type="button" class="btn btn-light"><i class="oi oi-graph"></i> 
+                        <span class="ml-1">Create Post</span>
+                      </button>
+                    </a>
+                   
+                  </div><!-- /.btn-toolbar -->
                  
                 </div><!-- /title and toolbar -->
 
@@ -75,7 +84,7 @@
                               <td class="align-middle">{{ucwords($post->user->name)}}</td>
                               <td class="align-middle"><a href="{{$post->category->link}}">{{$post->category->name}}</a></td>
                               <td class="align-middle">{{$post->created_at->diffForHumans()}}</td>
-                              <td class="align-middle">{!! is_null($post->source) ? "No" : "Yes". "<br>". $post->website !!}</td>
+                              <td class="align-middle">{!! is_null($post->source) ? "Yes" : "<b>No</b>". "<br>". $post->website !!}</td>
                               <td class="align-middle text-right">
 
                                 <a href="/post/edit/{{$post->id}}" class="btn btn-sm btn-icon btn-secondary">
