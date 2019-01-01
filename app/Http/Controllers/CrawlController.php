@@ -102,7 +102,7 @@ public function fml(){
             $isSave = $post->save();
 
             if($isSave){
-              trackActivity($post,$randUser);
+              trackActivity($post,$randUser,"post");
             }
 
         }
@@ -163,7 +163,7 @@ public function crawl_9gag(Request $request)
             $isSave = $post->save();
 
             if($isSave){
-              trackActivity($post,$post->user_id);
+              trackActivity($post,$post->user_id,"post");
             }
         }
 

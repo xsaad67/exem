@@ -66,4 +66,13 @@ class User extends Authenticatable
       return $this->is_admin == 1 ? true : false;
     }
 
+    
+    public function activities(){
+        return $this->morphMany('Spatie\Activitylog\Models\Activity', 'subject');
+    }
+
+    public function socials(){
+        return $this->hasMany(UserSocial::class);
+    }
+
 }

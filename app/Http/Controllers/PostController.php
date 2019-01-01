@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Post;
 use App\User;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class PostController extends Controller
 
     public function index()
     {  
-        $posts = Post::with('upvoters','downvoters','user')->inRandomOrder()->paginate(20);
+        $posts = Post::with('upvoters','downvoters','user')->withCount('comments')->inRandomOrder()->paginate(20);
         return view('posts.index',compact('posts'));
     }
 
@@ -70,7 +71,7 @@ class PostController extends Controller
 
         if($isSave){
             if(!is_null($request->user_id)){
-                trackActivity($post,$post->user_id,$log="created");
+                trackActivity($post,$post->user_id,"post","created");
             }
             return redirect($post->link)->withSuccess("Your post has been successfully created");
         }
@@ -145,7 +146,7 @@ class PostController extends Controller
 
         if($isSave){            
             if(!is_null($request->user_id)){
-                trackActivity($post,$post->user_id,$log="created");
+                trackActivity($post,$post->user_id,"post",$log="created");
             }
             return redirect($post->link)->withSuccess("Your post has been successfully updated");
         }

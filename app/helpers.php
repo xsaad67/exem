@@ -23,7 +23,8 @@ if(!function_exists('thousandsCurrencyFormat')){
 }
 
 
-function trackActivity($post,$randUser,$log="created",$logName = NULL){
+function trackActivity($post,$randUser,$logName = 'default',$log="created"){
+	
     $user = \App\User::find($randUser);
     activity()
         ->enableLogging()

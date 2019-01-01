@@ -19,6 +19,8 @@ class Post extends Model
   protected $fillable = ['source'];
   protected $dates = ['deleted_at'];
 
+  protected $appended = ['activities'];
+
   protected static $logName = 'post';
   
   public function sluggable() {

@@ -6,21 +6,26 @@ use Illuminate\Http\Request;
 use App\User;
 use Spatie\Activitylog\Models\Activity;
 use App\Post;
+use App\UserSocial;
 
 class ProfileController extends Controller
 {
     
 
     public function show($slug){
-    	$showActivity = ['created','updated'];
         $user = User::where('slug',$slug)->first();
-    	$activities = Activity::where("causer_id",11)->whereIn('description',$showActivity)->latest()->paginate(5);
+    	$showActivity = ['created','updated'];
+    	$activities = Activity::where("causer_id",$user->id)->whereIn('description',$showActivity)->latest()->paginate(5);
     	return view('profiles.activities',compact('activities','user'));
+    }
+
+    public function update(Request $request, User $user){
+        
     }
 
 
     public function edit(){
-    	$user = auth()->user();
+    	$user =User::find(3); //auth()->user();
     	return view('profiles.edit',compact('user'));
     }
 }

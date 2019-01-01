@@ -78,6 +78,7 @@
                                     class="avatar avatar-66 photo" height="66" width="66" itemprop="image">
                                 </a>
 
+
                               
                                 <span>
                                     Posted By <a href="{{$post->user->link}}">{{$post->user->name}}</a> at {{$post->created_at->diffForHumans()}}
@@ -164,6 +165,7 @@
 
         <div class="col-lg-3 col-md-3 col-sm-3 col-12 mt-5  ml-auto mx-auto text-center">
             <img src="{{ is_null($user->avatar) ? \Avatar::create($user->name)->setBackground('#f13544')->setBorder(0, '#aabbcc')->setFontSize(82)->setDimension(200)->toBase64() :  asset('img/avatars/'.$user->avatar) }}" class="img-fluid img-avatar" >
+            <a class="text-center">Change Profile</a>
 
             <h2 class="mt-2">{{ucwords($user->name)}}</h2>
 

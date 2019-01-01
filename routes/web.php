@@ -53,11 +53,13 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'super'], function () {
 
 
 Route::prefix('author')->group(function(){
-  Route::middleware(['auth'])->group(function(){ 
-    Route::get('/edit','ProfileController@edit');
-  });
+  // Route::middleware(['auth'])->group(function(){ 
+  //   Route::get('/edit','ProfileController@edit');
+  // });
+  Route::get('/edit','ProfileController@edit');
 	Route::get('/{slug}','ProfileController@show');
 });
+
 
 
 Route::prefix('category')->group(function(){
