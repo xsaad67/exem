@@ -67,12 +67,15 @@
 
         <div class="col-lg-7 col-md-7 col-sm-7 offset-lg-1 col-12 mt-5">
 
-            <div id="item-nav" class="mb-5">
+            {{-- <div id="item-nav" class="mb-5">
                 <div id="object-nav" role="navigation">
                     <ul>
-                        <li id="activity-personal-li" class="current selected">
-                            <a id="user-activity" href="{{url("/")}}">Activity</a>
-                        </li>
+
+                        @if(auth()->id() === $user->id)
+                            <li id="activity-personal-li" class="current selected">
+                                <a id="user-activity" href="{{url("/")}}">Activity</a>
+                            </li>
+                        @endif
                         <li id="xprofile-personal-li">
                             <a id="user-xprofile" href="{{$user->link}}/profile">Profile</a>
                         </li>
@@ -81,10 +84,12 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div> --}}
 
-
-                @yield("userContent")
+                <div class="mt-5">
+                    @yield("userContent")
+                </div>
+                
               </div>
 
 
@@ -93,12 +98,16 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-12 mt-5  ml-auto mx-auto text-center">
 
 
-            <img src="{{ is_null($user->avatar) ? \Avatar::create($user->name)->setBackground('#f13544')->setBorder(0, '#aabbcc')->setFontSize(82)->setDimension(200)->toBase64() :  asset('img/avatars/'.$user->avatar) }}" class="img-fluid img-avatar" >
-            <br>
-            <label class="custom-file">
-              <input type="file" id="file" class="custom-file-input">
-              <span class="custom-file-control">Change Picture</span>
-            </label>
+            <img src="{{ is_null($user->avatar) ? \Avatar::create($user->name)->setBackground('#f13544')->setBorder(0, '#aabbcc')->setFontSize(82)->setDimension(200)->toBase64() :  asset('img/avatars/'.$user->avatar) }}" class="img-fluid img-avatar" id="profilePicture" >
+                
+                @if(auth()->id() === $user->id)
+                    <label class="custom-file  mt-2 mb-1">
+                      <input type="file" id="userFile" name="userFile" class="custom-file-input" style="width:0px; height: 0px;">
+                      <span class="custom-file-control btn btn-warning">Change Picture</span>
+                    </label>
+                @endif
+
+       
 
             <h2 class="mt-2 red">{{ucwords($user->name)}}</h2>
 
@@ -113,3 +122,46 @@
 </div>
 
 @endsection
+
+@auth
+
+@section('footer')
+
+<script>
+    $(function(){
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+            }
+        });
+
+       $("#userFile").change(function(){
+            var myFormData = new FormData();
+            myFormData.append('userFile', userFile.files[0]);
+            $("#profilePicture").addClass("opacity-delete");
+            $.ajax({
+              url: '{{action("ProfileController@uploadFile")}}',
+              type: 'POST',
+              processData: false, // important
+              contentType: false, // important
+              dataType : 'json',
+              data: myFormData,
+                success: function(data)
+                {
+                    $("#profilePicture").removeClass("opacity-delete");
+                    $("#profilePicture").attr('src',data.fileName);
+                },
+                error: function(data)
+                {
+                    
+                    $("#profilePicture").removeClass("opacity-delete");
+                    console.log(data);
+                }
+            });
+       });
+    });
+</script>
+@endsection
+
+@endauth

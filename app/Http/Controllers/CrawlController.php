@@ -208,11 +208,14 @@ public function short_stories(){
 
 
 
-// public function american(){
-//     $url = "https://americanliterature.com/100-great-poems";
-//     $crawler = Goutte:::request('GET',$url);
+public function poetry(){
+    $url = "https://americanliterature.com/100-great-poems";
+    $crawler = Goutte::request('GET',$url);
+    $crawler->filter('a.sslink')->each(function($node){
+        dump($node->attr('href'));
+    });
     
-// }
+}
 
 
 

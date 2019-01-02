@@ -21,7 +21,7 @@ class Comment extends Model
     public function post(){
     	return $this->belongsTo(Post::class);
     }
-
+    
    	public function activities(){
     	return $this->morphMany('Spatie\Activitylog\Models\Activity', 'subject');
   	}

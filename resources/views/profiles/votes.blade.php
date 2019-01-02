@@ -8,7 +8,7 @@
 @endif
 
 
-@foreach($user->posts as $post)
+@foreach($posts as $post)
 
     <div class="bb-post-collection hfeed post-list standard bb-thumbnail-stretched bb-media-playable">
         <ul id="post-items" class="post-items">

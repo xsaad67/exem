@@ -41,6 +41,7 @@ Route::prefix('crawl')->group(function () {
   	Route::get('/fml','CrawlController@fml');
   	Route::get('/short-stories','CrawlController@short_stories');
   	Route::get('/9gag','CrawlController@crawl_9gag');
+    Route::get('/poetry','CrawlController@poetry');
 });
 
 
@@ -53,10 +54,10 @@ Route::group(['middleware' => ['admin'], 'prefix' => 'super'], function () {
 
 
 Route::prefix('author')->group(function(){
-  // Route::middleware(['auth'])->group(function(){ 
-  //   Route::get('/edit','ProfileController@edit');
-  // });
   Route::get('/edit','ProfileController@edit');
+  Route::post('/user-image','ProfileController@uploadFile');
+  Route::get('/my-votes','ProfileController@myVotes');
+  Route::get('/my-comments','ProfileController@myComments');
 	Route::get('/{slug}','ProfileController@show');
 });
 
@@ -73,7 +74,7 @@ Route::get('/users',function(){
 
 
 Route::prefix('/activity')->group(function(){
-	Route::get('all/{slug}','ActivityController@index');
+  Route::get('all/{slug}','ActivityController@index');
 });
 
 
